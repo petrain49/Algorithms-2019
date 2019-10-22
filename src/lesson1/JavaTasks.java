@@ -2,6 +2,10 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
 @SuppressWarnings("unused")
 public class JavaTasks {
     /**
@@ -34,8 +38,22 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTimes(String inputName, String outputName) throws IOException {
+        List list = new ArrayList<String>();
+
+        File file = new File(inputName);
+        BufferedReader in = new BufferedReader(new FileReader(file.getAbsoluteFile()));
+
+        String s;
+        list.add(in.readLine());
+
+        while ((s = in.readLine()) != null) {
+            if (s.matches(".*AM")) {
+
+            } else {
+
+            }
+        }
     }
 
     /**
