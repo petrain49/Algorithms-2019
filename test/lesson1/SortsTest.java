@@ -3,6 +3,7 @@ package lesson1;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -25,6 +26,11 @@ public class SortsTest {
             assertTrue(arr[i].compareTo(arr[i+1]) <= 0,
                        prefix + " ERROR: i = " + i + " a[i] = " + arr[i] + " a[i+1] = " + arr[i+1]);
         }
+    }
+
+    @Test
+    public void sortTimes() throws IOException {
+        JavaTasks.sortTimes("input/time_in1.txt", "output/sort1.txt");
     }
 
     @Test

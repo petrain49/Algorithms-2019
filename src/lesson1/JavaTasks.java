@@ -39,21 +39,54 @@ public class JavaTasks {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortTimes(String inputName, String outputName) throws IOException {
-        List list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
 
         File file = new File(inputName);
         BufferedReader in = new BufferedReader(new FileReader(file.getAbsoluteFile()));
 
         String s;
-        list.add(in.readLine());
-
         while ((s = in.readLine()) != null) {
-            if (s.matches(".*AM")) {
+            list.add(s);
+        }
 
-            } else {
+        in.close();
 
+        //System.out.println(list);
+
+        for (int i = 1; i < list.size(); i++) {
+            String current = list.get(i);
+            int j = i - 1;
+            for (; j >= 0; j--) {
+                if (totw(list.get(j)).compareTo(totw(current)) > 0) list.set(j+1, list.get(j));
+                else break;
+            }
+            list.set(j+1, current);
+        }
+        //System.out.println(list);
+
+        FileWriter writer = new FileWriter(outputName, false);
+        for (String x: list) { writer.write(x + "\n"); }
+
+    }
+
+    /**
+     * Преобразует формат времени в 24-часовой
+     */
+    private static String totw(String t) {
+        StringBuilder time = new StringBuilder(t);
+        int b = Integer.parseInt(t.substring(0, 2));
+
+        if (time.substring(9).equals("AM")) {
+            if (b == 12) {
+                time.replace(0, 2, "00");
             }
         }
+        else {
+            if (b != 12) {
+                time.replace(0, 2, Integer.toString(b + 12));
+            }
+        }
+        return time.substring(0, 8);
     }
 
     /**
