@@ -3,7 +3,8 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
@@ -31,8 +32,34 @@ public class JavaAlgorithms {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) {
-        throw new NotImplementedError();
+    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) throws IOException {
+        File file = new File(inputName);
+        BufferedReader in = new BufferedReader(new FileReader(file.getAbsoluteFile()));
+
+        String s;
+        List<Integer> list = new ArrayList<Integer>();
+        while ((s = in.readLine()) != null) {
+            list.add(Integer.parseInt(s));
+        }
+        in.close();
+
+        int min = 0;
+        int posX = 0;
+        int posI = 0;
+        for (int x = 0; x < list.size(); x++) {
+            int lx = list.get(x);
+            for (int i = x + 1; i < list.size(); i++) {
+                int li = list.get(i);
+
+                if (li > lx && ((li - lx) > min)) {
+                    min = li - lx;
+                    posX = x + 1;
+                    posI = i + 1;
+                }
+            }
+        }
+
+        return new Pair<Integer, Integer>(posX, posI);
     }
 
     /**
