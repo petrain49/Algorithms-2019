@@ -34,6 +34,11 @@ public class SortsTest {
     }
 
     @Test
+    public void sortTemperatures() throws IOException {
+        JavaTasks.sortTemperatures("input/temp_in1.txt", "output/temp.txt");
+    }
+
+    @Test
     @Tag("Example")
     public void insertionSort() {
         int[] arr = new int[] { 3, 7, 5, 9, 1, 6, 19, 13 };

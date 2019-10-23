@@ -4,7 +4,7 @@ import kotlin.NotImplementedError;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
+import java.math.*;
 
 @SuppressWarnings("unused")
 public class JavaTasks {
@@ -39,19 +39,15 @@ public class JavaTasks {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortTimes(String inputName, String outputName) throws IOException {
-        List<String> list = new ArrayList<String>();
-
         File file = new File(inputName);
         BufferedReader in = new BufferedReader(new FileReader(file.getAbsoluteFile()));
 
         String s;
+        List<String> list = new ArrayList<String>();
         while ((s = in.readLine()) != null) {
             list.add(s);
         }
-
         in.close();
-
-        //System.out.println(list);
 
         for (int i = 1; i < list.size(); i++) {
             String current = list.get(i);
@@ -62,11 +58,13 @@ public class JavaTasks {
             }
             list.set(j+1, current);
         }
-        //System.out.println(list);
 
-        FileWriter writer = new FileWriter(outputName, false);
-        for (String x: list) { writer.write(x + "\n"); }
+        FileWriter writer = new FileWriter(outputName);
+        BufferedWriter bufferedWriter = new BufferedWriter(writer);
 
+        for (String x: list) { bufferedWriter.write(x + "\n"); }
+
+        bufferedWriter.close();
     }
 
     /**
@@ -149,8 +147,32 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+        File file = new File(inputName);
+        BufferedReader in = new BufferedReader(new FileReader(file.getAbsoluteFile()));
+
+        String s;
+        List<Double> elements = new ArrayList<Double>();
+        while ((s = in.readLine()) != null) {
+            elements.add(Double.parseDouble(s));
+        }
+
+        for (int i = 1; i < elements.size(); i++) {
+            double current = elements.get(i);
+            int j = i - 1;
+            for (; j >= 0; j--) {
+                if (elements.get(j) > current) elements.set(j + 1, elements.get(j));
+                else break;
+            }
+            elements.set(j+1, current);
+        }
+
+        FileWriter writer = new FileWriter(outputName);
+        BufferedWriter bufferedWriter = new BufferedWriter(writer);
+
+        for (double x: elements) { bufferedWriter.write(x + "\n"); }
+
+        bufferedWriter.close();
     }
 
     /**
