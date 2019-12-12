@@ -44,10 +44,10 @@ public class JavaGraphTasks {
         Set<Graph.Vertex> vertices = graph.getVertices();
         Set<Graph.Edge> edges = graph.getEdges();
 
-        if (vertices.isEmpty() || edges.isEmpty() || edges.size() < 3) return Collections.emptyList();
-        for (Graph.Vertex x: vertices)
-            if (graph.getConnections(x).size() % 2 != 0)
-                return Collections.emptyList();
+        if (vertices.isEmpty() || edges.isEmpty() || edges.size() < 3)
+            return Collections.emptyList();
+
+        if (!coherence(graph)) return Collections.emptyList();
 
         List<Graph.Edge> result = new ArrayList<>();
 
@@ -75,7 +75,8 @@ public class JavaGraphTasks {
             }
         }
 
-        for (int x = 1; x < vList.size(); x++) result.add(graph.getConnection(vList.get(x - 1), vList.get(x)));
+        for (int x = 1; x < vList.size(); x++)
+            result.add(graph.getConnection(vList.get(x - 1), vList.get(x)));
         return result;
     }
 
@@ -107,24 +108,38 @@ public class JavaGraphTasks {
      * |
      * J ------------ K
      */
+    private static boolean coherence(Graph graph) {
+        Set<Graph.Vertex> vertices = graph.getVertices();
+        for (Graph.Vertex x: vertices) {
+            if (graph.getConnections(x).size() % 2 != 0)
+                return false;
+        }
+        return true;
+    }
+
     public static Graph minimumSpanningTree(Graph graph) {
         Set<Graph.Vertex> vertices = graph.getVertices();
         GraphBuilder newGraph = new GraphBuilder();
-
-        if (vertices.isEmpty()) return newGraph.build();
+        
 
         for (Graph.Vertex v: graph.getVertices()) {
+            
             newGraph.addVertex(v.getName());
             vertices.remove(v);
-            for (Graph.Vertex neighbour: graph.getNeighbors(v)) {
-                if ((vertices.contains(neighbour) || graph.getConnections(v).size() == 1) && !v.equals(neighbour)) {
-                    newGraph.addVertex(neighbour.getName());
-                    newGraph.addConnection(v, neighbour, 1);
-                    vertices.remove(neighbour);
+            for (Graph.Vertex nb: graph.getNeighbors(v)) {
+                if (vertices.contains(nb)) {
+                    if ((graph.getConnections(v).size() == 1) && !v.equals(nb)) {
+                        newGraph.addVertex(nb.getName());
+                        newGraph.addConnection(v, nb, 1);
+                        vertices.remove(nb);
+                    }
+                } else if (newGraph.build().getConnections(v).size() == 0) {
+                    newGraph.addConnection(v, nb, 1);
                 }
             }
-
         }
+        System.out.println(graph.getEdges());
+        System.out.println(newGraph.build().getEdges());
         return newGraph.build();
     }
 
@@ -155,6 +170,20 @@ public class JavaGraphTasks {
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
      */
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
+        Set<Graph.Vertex> vertices = graph.getVertices();
+        List<Graph.Edge> edges = new ArrayList<>(graph.getEdges());
+        Set<Graph.Vertex> res = new HashSet<>();
+
+        if (vertices.size() == 0) return Collections.emptySet();
+        else if (vertices.size() < 3) {
+            res.add(edges.get(0).getBegin());
+            return res;
+        }
+
+        int a = minimumSpanningTree(graph).getEdges().size();
+        int b = graph.getEdges().size();
+        if (a < b) throw new IllegalArgumentException();
+
         throw new NotImplementedError();
     }
 

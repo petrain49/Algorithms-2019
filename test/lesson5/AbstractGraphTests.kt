@@ -119,6 +119,19 @@ abstract class AbstractGraphTests {
     fun minimumSpanningTree(minimumSpanningTree: Graph.() -> Graph) {
         val emptyGraph = GraphBuilder().build()
         assertTrue(emptyGraph.minimumSpanningTree().edges.isEmpty())
+        val graph0 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            addConnection(a, b)
+            addConnection(c, d)
+            addConnection(d, e)
+        }.build()
+        val tree0 = graph0.minimumSpanningTree()
+        assertEquals(3, tree0.edges.size)
+
         val graph = GraphBuilder().apply {
             val a = addVertex("A")
             val b = addVertex("B")
