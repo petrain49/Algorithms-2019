@@ -4,7 +4,7 @@ import kotlin.NotImplementedError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -28,9 +28,16 @@ public class JavaDynamicTasks {
         String[] A = first.split("");
         String[] B = second.split("");
 
-        int n = first.length();
-        int m = second.length();
+        List<String> res = common(A, B);
 
+        StringBuilder sb = new StringBuilder();
+        for (String s: res) sb.append(s);
+        return sb.reverse().toString();
+    }
+
+    private static <T> List<T> common(T[] A, T[] B) {
+        int n = A.length;
+        int m = B.length;
         int[][] matrix = new int[n + 1][m + 1];
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= m; j++) {
@@ -40,7 +47,7 @@ public class JavaDynamicTasks {
         }
         //System.out.println(Arrays.deepToString(matrix));
 
-        List<String> res = new ArrayList<>();
+        List<T> res = new ArrayList<>();
         while (n > 0 && m > 0) {
             if (A[n - 1].equals(B[m - 1])) {
                 res.add(A[n - 1]);
@@ -50,10 +57,7 @@ public class JavaDynamicTasks {
             else if (matrix[n - 1][m] == matrix[n][m]) n--;
             else m--;
         }
-
-        StringBuilder sb = new StringBuilder();
-        for (String s: res) sb.append(s);
-        return sb.reverse().toString();
+        return res;
     }
 
     /**
@@ -69,7 +73,28 @@ public class JavaDynamicTasks {
      * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
      */
     public static List<Integer> longestIncreasingSubSequence(List<Integer> list) {
-        throw new NotImplementedError();
+        if (list.size() == 0) return Collections.emptyList();
+
+        List<Integer> slist = soort(list);
+        List<Integer> res = (List<Integer>) (List) common(list.toArray(), slist.toArray());
+        Collections.reverse(res);
+        return res;
+    }
+
+    private static List<Integer> soort(List<Integer> list) {
+        Integer[] arr = list.toArray(new Integer[list.size()]);
+
+        for(int i = arr.length-1 ; i > 0 ; i--) {
+            int tmp;
+            for(int j = 0 ; j < i ; j++){
+                if( arr[j] > arr[j+1] ){
+                    tmp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = tmp;
+                }
+            }
+        }
+        return Arrays.asList(arr);
     }
 
     /**

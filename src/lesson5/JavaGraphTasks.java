@@ -167,6 +167,7 @@ public class JavaGraphTasks {
      * Если на входе граф с циклами, бросить IllegalArgumentException
      *
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
+     * O(2*(N + M))
      */
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
         Set<Graph.Vertex> vertices = graph.getVertices();
