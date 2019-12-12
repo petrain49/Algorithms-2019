@@ -2,6 +2,9 @@ package lesson6;
 
 import kotlin.NotImplementedError;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -18,8 +21,39 @@ public class JavaDynamicTasks {
      * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
      * При сравнении подстрок, регистр символов *имеет* значение.
      */
+    /**
+     * O(first.length() * second.length())
+     */
     public static String longestCommonSubSequence(String first, String second) {
-        throw new NotImplementedError();
+        String[] A = first.split("");
+        String[] B = second.split("");
+
+        int n = first.length();
+        int m = second.length();
+
+        int[][] matrix = new int[n + 1][m + 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (A[i - 1].equals(B[j - 1])) matrix[i][j] = matrix[i - 1][j - 1] + 1;
+                else matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
+            }
+        }
+        //System.out.println(Arrays.deepToString(matrix));
+
+        List<String> res = new ArrayList<>();
+        while (n > 0 && m > 0) {
+            if (A[n - 1].equals(B[m - 1])) {
+                res.add(A[n - 1]);
+                n--;
+                m--;
+            }
+            else if (matrix[n - 1][m] == matrix[n][m]) n--;
+            else m--;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (String s: res) sb.append(s);
+        return sb.reverse().toString();
     }
 
     /**

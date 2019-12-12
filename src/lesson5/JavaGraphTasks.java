@@ -1,9 +1,9 @@
 package lesson5;
 
 import kotlin.NotImplementedError;
+import lesson5.impl.GraphBuilder;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaGraphTasks {
@@ -33,8 +33,50 @@ public class JavaGraphTasks {
      * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
      * связного графа ровно по одному разу
      */
+    private static boolean connectedEdges(Graph.Edge f, Graph.Edge s) {
+        return f.getBegin().equals(s.getBegin())
+                || f.getBegin().equals(s.getEnd())
+                || f.getEnd().equals(s.getEnd())
+                || f.getEnd().equals(s.getBegin());
+    }
+
     public static List<Graph.Edge> findEulerLoop(Graph graph) {
-        throw new NotImplementedError();
+        Set<Graph.Vertex> vertices = graph.getVertices();
+        Set<Graph.Edge> edges = graph.getEdges();
+
+        if (vertices.isEmpty() || edges.isEmpty() || edges.size() < 3) return Collections.emptyList();
+        for (Graph.Vertex x: vertices)
+            if (graph.getConnections(x).size() % 2 != 0)
+                return Collections.emptyList();
+
+        List<Graph.Edge> result = new ArrayList<>();
+
+        Deque<Graph.Vertex> vst = new ArrayDeque<>();
+        vst.add(vertices.iterator().next());
+        List<Graph.Vertex> vList = new ArrayList<>();
+
+        Graph.Vertex cur;
+        Graph.Edge edge;
+        while (!vst.isEmpty()) {
+            cur = vst.peekLast();
+            for (Graph.Vertex v: vertices) {
+                edge = graph.getConnection(cur, v);
+
+                if (edges.contains(edge)) {
+                    vst.add(v);
+                    edges.remove(edge);
+                    break;
+                }
+            }
+
+            if (cur == vst.peekLast()) {
+                vst.removeLast();
+                vList.add(cur);
+            }
+        }
+
+        for (int x = 1; x < vList.size(); x++) result.add(graph.getConnection(vList.get(x - 1), vList.get(x)));
+        return result;
     }
 
     /**
@@ -66,7 +108,24 @@ public class JavaGraphTasks {
      * J ------------ K
      */
     public static Graph minimumSpanningTree(Graph graph) {
-        throw new NotImplementedError();
+        Set<Graph.Vertex> vertices = graph.getVertices();
+        GraphBuilder newGraph = new GraphBuilder();
+
+        if (vertices.isEmpty()) return newGraph.build();
+
+        for (Graph.Vertex v: graph.getVertices()) {
+            newGraph.addVertex(v.getName());
+            vertices.remove(v);
+            for (Graph.Vertex neighbour: graph.getNeighbors(v)) {
+                if ((vertices.contains(neighbour) || graph.getConnections(v).size() == 1) && !v.equals(neighbour)) {
+                    newGraph.addVertex(neighbour.getName());
+                    newGraph.addConnection(v, neighbour, 1);
+                    vertices.remove(neighbour);
+                }
+            }
+
+        }
+        return newGraph.build();
     }
 
     /**
