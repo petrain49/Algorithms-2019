@@ -120,7 +120,6 @@ public class JavaGraphTasks {
     public static Graph minimumSpanningTree(Graph graph) {
         Set<Graph.Vertex> vertices = graph.getVertices();
         GraphBuilder newGraph = new GraphBuilder();
-        
 
         for (Graph.Vertex v: graph.getVertices()) {
             
@@ -172,19 +171,43 @@ public class JavaGraphTasks {
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
         Set<Graph.Vertex> vertices = graph.getVertices();
         List<Graph.Edge> edges = new ArrayList<>(graph.getEdges());
-        Set<Graph.Vertex> res = new HashSet<>();
 
-        if (vertices.size() == 0) return Collections.emptySet();
-        else if (vertices.size() < 3) {
-            res.add(edges.get(0).getBegin());
-            return res;
-        }
+        Set<Graph.Vertex> fRes = new HashSet<>();
+        Set<Graph.Vertex> sRes = new HashSet<>();
 
         int a = minimumSpanningTree(graph).getEdges().size();
         int b = graph.getEdges().size();
         if (a < b) throw new IllegalArgumentException();
 
-        throw new NotImplementedError();
+        if (vertices.size() == 0) return Collections.emptySet();
+        else if (vertices.size() < 3) {
+            fRes.add(edges.get(0).getBegin());
+            return fRes;
+        }
+
+        Map<Graph.Vertex, Integer> map = new HashMap<>();
+        Set<Graph.Vertex> nbs;
+        int num;
+        for (Graph.Vertex x: graph.getVertices()) {
+            num = 0;
+            if (!map.containsKey(x)) {
+                map.put(x, 0);
+                fRes.add(x);
+            }
+            if (map.get(x) == 0) num = 1;
+
+            nbs = graph.getNeighbors(x);
+            for (Graph.Vertex nb: nbs) {
+                if (!map.containsKey(nb)) {
+                    map.put(nb, num);
+
+                    if (num == 0) fRes.add(nb);
+                    else sRes.add(nb);
+                }
+            }
+        }
+        if (fRes.size() >= sRes.size()) return fRes;
+        return sRes;
     }
 
     /**
